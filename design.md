@@ -32,4 +32,13 @@
 * Payment (Stripe)
 
 ## Business modules
-* Organization
+
+### Registration modules
+* Register player account
+* Register team
+* Register tournament
+* Register league
+
+### Grouping modules
+* Group single-players in tournament pools
+* Group Pick-up teams 
