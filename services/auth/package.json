@@ -1,0 +1,33 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "main": "lib/index",
+  "types": "lib/index",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/dotenv": "^4.0.3",
+    "@types/express": "^4.16.0",
+    "@types/joi": "^13.3.0",
+    "@types/jsonwebtoken": "^7.2.7",
+    "@types/node": "^10.3.5",
+    "@types/uuid": "^3.4.3",
+    "@types/winston": "^2.3.9",
+    "nodemon": "^1.17.5",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "joi": "^13.4.0",
+    "jsonwebtoken": "^8.3.0",
+    "ts-node": "^7.0.0",
+    "uuid": "^3.2.1",
+    "winston": "^3.0.0"
+  },
+  "scripts": {
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+  }
+}
