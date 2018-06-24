@@ -1,36 +1,20 @@
 import joi = require("joi");
-import jwt = require("jsonwebtoken");
-import * as t from "./types";
+import { validate } from "../utils";
 
-export const createSchema = joi.object().keys({
-  idempotencyKey: joi.string().guid({ version: ["uuidv1"] }),
+const idempotencyObj = {
+  idempotencyKey: joi.string().guid({ version: ["uuidv1"] })
+};
+
+const createSchema = joi.object().keys({
+  ...idempotencyObj,
   email: joi.string().email()
 });
 
-export const create = (o: object) =>
-  joi
-    .validate(o, createSchema, {
-      presence: "required"
-    })
-    .then((o: object) => {
-      const a = o as t.CreateArgs;
-      // logger.event("players_create", "validated", data.idempotencyKey);
-      if (typeof process.env.JWT_SECRET !== "string") {
-        throw new Error("Missing JWT_SECRET from env vars.");
-      }
-      const createSucceeded: t.CreateSucceeded = {
-        jwt: jwt.sign(a.email, process.env.JWT_SECRET)
-      };
-      return createSucceeded;
-    })
-    .catch((error: t.CreateFailed) => {
-      if (error instanceof t.CreateFailed) {
-      }
-      const idempotencyKey =
-        req.body && req.body.idempotencyKey === typeof "string"
-          ? req.body.idempotencyKey
-          : "none";
+export const createValid = (o: object) => validate(o, createSchema);
 
-      logger.event("players_create_failed", error.message, idempotencyKey);
-      res.json(error.message);
-    });
+const authenticateSchema = joi.object().keys({
+  ...idempotencyObj,
+  jwt: joi.string()
+});
+
+export const authenticateValid = (o: object) => validate(o, authenticateSchema);

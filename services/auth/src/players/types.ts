@@ -14,3 +14,8 @@ export type CreateFailed = ValidationFailed | JwtFailed;
 export type CreateSucceeded = {
   jwt: string;
 };
+
+export type AuthenticateArgs = {
+  idempotencyKey: string;
+  jwt: string;
+};

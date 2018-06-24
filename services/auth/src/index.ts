@@ -4,6 +4,8 @@ import express = require("express");
 import bodyParser = require("body-parser");
 import joi = require("joi");
 import jwt = require("jsonwebtoken");
+import { Players } from "./players";
+import { Config } from "./config";
 
 function main() {
   dotenv.config();
@@ -11,40 +13,43 @@ function main() {
   logger.info("Starting auth service.");
   const app = express();
   app.use(bodyParser.json());
-  app.get("/alive", (req, res) => {
-    res.json({ alive: true });
-  });
-  app.post("/players_create", (req, res) => {
-    // const schema = joi.object().keys({
-    //   idempotencyKey: joi.string().guid({ version: ["uuidv1"] }),
-    //   email: joi.string().email()
-    // });
-    // joi
-    //   .validate(req.body, schema, {
-    //     presence: "required"
-    //   })
-    // .then((data: t.CreateArgs) => {
-    //   logger.event("players_create", "validated", data.idempotencyKey);
-    //   if (typeof process.env.JWT_SECRET !== "string") {
-    //     throw new Error("Missing JWT_SECRET from env vars.");
-    //   }
-    //   const createSucceeded: t.CreateSucceeded = {
-    //     jwt: jwt.sign(data.email, process.env.JWT_SECRET)
-    //   };
-    //   res.json(createSucceeded);
-    // })
-    // .catch((error: t.CreateFailed) => {
-    //   const idempotencyKey =
-    //     req.body && req.body.idempotencyKey === typeof "string"
-    //       ? req.body.idempotencyKey
-    //       : "none";
-    //   logger.event("players_create_failed", error.message, idempotencyKey);
-    //   res.json(error.message);
-    // });
-  });
-  app.listen(process.env.SERVER_PORT, () => {
-    logger.info(`Listening on port [${process.env.SERVER_PORT}].`);
-  });
+
+  const config = new Config(process.env);
+  config.validState
+    .then(configState => {
+      app.get("/alive", (req, res) => {
+        res.json({ alive: true });
+      });
+
+      const players = new Players(logger, configState);
+      app.post("/players_create", (req, res) => {
+        players
+          .create(req.body)
+          .then(result => {
+            res.json(result);
+          })
+          .catch(result => {
+            res.json(result);
+          });
+      });
+      app.post("/players_authenticate", (req, res) => {
+        players
+          .authenticate(req.body)
+          .then(result => {
+            res.json(result);
+          })
+          .catch(result => {
+            res.json(result);
+          });
+      });
+      app.listen(process.env.SERVER_PORT, () => {
+        logger.info(`Listening on port [${process.env.SERVER_PORT}].`);
+      });
+    })
+    .catch(e => {
+      logger.error(e);
+      process.exit(1);
+    });
 }
 
 main();
