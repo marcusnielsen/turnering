@@ -12,8 +12,8 @@ export const validate = (o: object, s: joi.ObjectSchema) =>
     });
 
 export const jwt = {
-  sign: (o: object, s: string) => {
-    return new Promise<string>((resolve, reject) => {
+  sign: (o: object, s: string) =>
+    new Promise<string>((resolve, reject) => {
       jsonwebtoken.sign(o, s, (e, r) => {
         if (e) {
           reject(e);
@@ -21,6 +21,23 @@ export const jwt = {
         }
         resolve(r);
       });
-    });
-  }
+    }),
+  verify: (token: string, secret: string) =>
+    new Promise<object>((resolve, reject) => {
+      jsonwebtoken.verify(token, secret, (e, r) => {
+        if (e) {
+          reject(e);
+          return;
+        }
+        if (typeof r === "string") {
+          reject({
+            type: "type_error",
+            message:
+              "type string not allowed. Sign the jwt as an object instead."
+          });
+          return;
+        }
+        resolve(r);
+      });
+    })
 };
