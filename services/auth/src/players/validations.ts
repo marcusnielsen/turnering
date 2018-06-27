@@ -10,11 +10,11 @@ const createSchema = joi.object().keys({
   email: joi.string().email()
 });
 
-export const createValid = (o: object) => validate(o, createSchema);
+export const create = (o: object) => validate(o, createSchema);
 
-const authenticateSchema = joi.object().keys({
+const verifyTokenSchema = joi.object().keys({
   ...idempotencyObj,
   jwt: joi.string()
 });
 
-export const authenticateValid = (o: object) => validate(o, authenticateSchema);
+export const verifyToken = (o: object) => validate(o, verifyTokenSchema);

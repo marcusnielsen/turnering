@@ -16,7 +16,7 @@ export class Players {
   }
 
   public create(o: object) {
-    return validations.createValid(o).then((o: object) => {
+    return validations.create(o).then((o: object) => {
       const a = o as t.CreateArgs;
       this.state.push(a.email);
       const createSucceeded: t.CreateSucceeded = {
@@ -27,8 +27,8 @@ export class Players {
     });
   }
 
-  public authenticate(o: object) {
-    return validations.authenticateValid(o).then((o: object) => {
+  public verifyJwt(o: object) {
+    return validations.verifyToken(o).then((o: object) => {
       const a = o as t.AuthenticateArgs;
       // @TODO: make async.
       const result = jwt.verify(a.jwt, this.configState.JWT_SECRET) as {

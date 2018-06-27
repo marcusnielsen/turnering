@@ -32,9 +32,9 @@ function main() {
             res.json(result);
           });
       });
-      app.post("/players_authenticate", (req, res) => {
+      app.post("/players_verify_jwt", (req, res) => {
         players
-          .authenticate(req.body)
+          .verifyJwt(req.body)
           .then(result => {
             res.json(result);
           })
